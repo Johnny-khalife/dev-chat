@@ -15,7 +15,7 @@ export default function Home() {
         <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
          Devcord
         </h2>
-        <p className="text-center mt-1 ">Connect with developers worldwide</p>
+        <p className="text-center mt-3 font-semibold ">Connect with developers worldwide</p>
       </div>
       <AuthForm />
     </div>
