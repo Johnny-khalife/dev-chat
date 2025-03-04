@@ -13,8 +13,9 @@ export default function Home() {
           src="/images/logo3.webp"
         />
         <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-          Sign in to your account
+         Devcord
         </h2>
+        <p className="text-center mt-1 ">Connect with developers worldwide</p>
       </div>
       <AuthForm />
     </div>

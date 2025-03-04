@@ -26,32 +26,54 @@ const AuthForm = () => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      name: "",
+      username: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
+  const password = watch("password"); // Get live password value
+  const confirmPassword = watch("confirmPassword"); // Get live confirm password value
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async(data) => {
     setIsLoading(true);
-
+    console.log(data);
     if (variant === "REGISTER") {
+      // if (data.password !== data.confirmPassword) {
+      //   toast.error("Passwords do not match!");
+      //   setIsLoading(false);
+      //   return;
+      // }
       axios
-        .post("/api/register", data)
-        .catch(() => toast.error("Something Went Wrong!"))
-        .finally(()=>setIsLoading(false))
+        .post("http://localhost:3005/api/auth/signup", data)
+        .then(() => toast.success("Account created successfully!"))
+        .catch(() =>toast.error("Something Went Wrong!"))
+        .finally(() => setIsLoading(false));
+
+      // await fetch("http://localhost:3005/api/auth/signup",{
+      //   method:"POST",
+      //   headers:{
+      //     "Content-Type":"application/json",
+      //   },
+      //     body:JSON.stringify(data)
+      // })
     }
     if (variant === "LOGIN") {
-      //NextAuth Signin
+      const { email, password } = data;
+      axios
+        .post("http://localhost:3005/api/auth/signin", { email, password })
+        .then(() => toast.success("Logged in successfully!"))
+        .catch(() => toast.error("Invalid credentials!"))
+        .finally(() => setIsLoading(false));
     }
   };
 
   const socialAction = (action: string) => {
     setIsLoading(true);
-
     //NextAuth Social Signin
   };
 
@@ -61,7 +83,7 @@ const AuthForm = () => {
         <form className="space-y-6 " onSubmit={handleSubmit(onSubmit)}>
           {variant === "REGISTER" && (
             <Input
-              id="name"
+              id="username"
               label="Name"
               register={register}
               errors={errors}
@@ -84,6 +106,19 @@ const AuthForm = () => {
             errors={errors}
             disabled={isLoadind}
           />
+          {variant === "REGISTER" && (
+            <Input
+              id="confirmPassword"
+              label="Confirm Password"
+              type="password"
+              register={register}
+              errors={errors}
+              disabled={isLoadind}
+            />
+          )}
+          {password && confirmPassword && password !== confirmPassword && (
+            <p className="text-red-500 text-sm">Passwords do not match!</p>
+          )}
           <div>
             <Button disabled={isLoadind} fullWidth type="submit">
               {variant === "LOGIN" ? "Sign in" : "Register"}
@@ -108,14 +143,14 @@ const AuthForm = () => {
             />
             <AuthSocialButton
               icon={BsGoogle}
-              onClick={() => socialAction("gogle")}
+              onClick={() => socialAction("google")}
             />
           </div>
         </div>
         <div className="flex gap-2 justify-center text-sm mt-6 px-2 text-gray-500">
           <div>
             {variant === "LOGIN"
-              ? "New to Dev-Chat?"
+              ? "New to Devcord?"
               : "Already have an accout?"}
           </div>
           <div onClick={toggleVariant} className="underline cursor-pointer">
