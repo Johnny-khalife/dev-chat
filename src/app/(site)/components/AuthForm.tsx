@@ -49,19 +49,31 @@ const AuthForm = () => {
   const password = watch("password"); // Get live password value
   const confirmPassword = watch("confirmPassword"); // Get live confirm password value
 
-  const onSubmit: SubmitHandler<FieldValues> =  (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
+
     if (variant === "REGISTER") {
       // if (data.password !== data.confirmPassword) {
       //   toast.error("Passwords do not match!");
       //   setIsLoading(false);
       //   return;
       // }
-      axios
-        .post("http://localhost:3005/api/auth/signup", data)
-        .then(() => toast.success("Account created successfully!"))
-        .catch(() => toast.error("Something Went Wrong!"))
-        .finally(() => setIsLoading(false));
+
+      try {
+        console.log("Sending data:", data);
+
+        const response = await axios.post(
+          "http://localhost:3005/api/auth/signup",
+          data
+        );
+        toast.success(response.data.message);
+      } catch (e: any) {
+        if (e.response) {
+          toast.error(e.response.data.message);
+        }
+      } finally {
+        setIsLoading(false);
+      }
 
       // await fetch("http://localhost:3005/api/auth/signup",{
       //   method:"POST",
@@ -73,11 +85,17 @@ const AuthForm = () => {
     }
     if (variant === "LOGIN") {
       const { email, password } = data;
-      axios
+      try {
+      const response = await axios
         .post("http://localhost:3005/api/auth/signin", { email, password })
-        .then(() => toast.success("Logged in successfully!"))
-        .catch(() => toast.error("Invalid credentials!"))
-        .finally(() => setIsLoading(false));
+        toast.success(response.data.message);
+      } catch (e: any) {
+        if (e.response) {
+          toast.error(e.response.data.message);
+        }
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
