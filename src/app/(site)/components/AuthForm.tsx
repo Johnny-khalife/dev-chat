@@ -44,13 +44,13 @@ const AuthForm = () => {
       password: "",
       confirmPassword: "",
     },
+    mode: "onSubmit",
   });
   const password = watch("password"); // Get live password value
   const confirmPassword = watch("confirmPassword"); // Get live confirm password value
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+  const onSubmit: SubmitHandler<FieldValues> =  (data) => {
     setIsLoading(true);
-    console.log(data);
     if (variant === "REGISTER") {
       // if (data.password !== data.confirmPassword) {
       //   toast.error("Passwords do not match!");
@@ -97,6 +97,7 @@ const AuthForm = () => {
               register={register}
               errors={errors}
               disabled={isLoadind}
+              required
             />
           )}
           <Input
@@ -106,6 +107,7 @@ const AuthForm = () => {
             register={register}
             errors={errors}
             disabled={isLoadind}
+            required
           />
           <Input
             id="password"
@@ -114,6 +116,7 @@ const AuthForm = () => {
             register={register}
             errors={errors}
             disabled={isLoadind}
+            required
           />
           {variant === "REGISTER" && (
             <Input
@@ -123,6 +126,7 @@ const AuthForm = () => {
               register={register}
               errors={errors}
               disabled={isLoadind}
+              required
             />
           )}
           {password && confirmPassword && password !== confirmPassword && (
