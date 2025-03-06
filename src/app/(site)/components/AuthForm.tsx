@@ -53,15 +53,7 @@ const AuthForm = () => {
     setIsLoading(true);
 
     if (variant === "REGISTER") {
-      // if (data.password !== data.confirmPassword) {
-      //   toast.error("Passwords do not match!");
-      //   setIsLoading(false);
-      //   return;
-      // }
-
       try {
-        console.log("Sending data:", data);
-
         const response = await axios.post(
           "http://localhost:3005/api/auth/signup",
           data
@@ -74,21 +66,21 @@ const AuthForm = () => {
       } finally {
         setIsLoading(false);
       }
-
-      // await fetch("http://localhost:3005/api/auth/signup",{
-      //   method:"POST",
-      //   headers:{
-      //     "Content-Type":"application/json",
-      //   },
-      //     body:JSON.stringify(data)
-      // })
     }
     if (variant === "LOGIN") {
       const { email, password } = data;
       try {
-      const response = await axios
-        .post("http://localhost:3005/api/auth/signin", { email, password })
-        toast.success(response.data.message);
+        const response = await axios.post(
+          "http://localhost:3005/api/auth/signin",
+          { email, password }
+        );
+        if (response.status !== 200) {
+          toast.error(response.data.message);
+          setIsLoading(false);
+          return;
+        } else {
+          toast.success(response.data.message);
+        }
       } catch (e: any) {
         if (e.response) {
           toast.error(e.response.data.message);
@@ -97,11 +89,6 @@ const AuthForm = () => {
         setIsLoading(false);
       }
     }
-  };
-
-  const socialAction = (action: string) => {
-    setIsLoading(true);
-    //NextAuth Social Signin
   };
 
   return (
@@ -116,6 +103,7 @@ const AuthForm = () => {
               errors={errors}
               disabled={isLoadind}
               required
+              placeholder="Enter your name"
             />
           )}
           <Input
@@ -126,6 +114,7 @@ const AuthForm = () => {
             errors={errors}
             disabled={isLoadind}
             required
+            placeholder="Enter your email"
           />
           <Input
             id="password"
@@ -135,6 +124,7 @@ const AuthForm = () => {
             errors={errors}
             disabled={isLoadind}
             required
+            placeholder="Enter your password"
           />
           {variant === "REGISTER" && (
             <Input
@@ -145,6 +135,7 @@ const AuthForm = () => {
               errors={errors}
               disabled={isLoadind}
               required
+              placeholder="Confirm your password"
             />
           )}
           {password && confirmPassword && password !== confirmPassword && (

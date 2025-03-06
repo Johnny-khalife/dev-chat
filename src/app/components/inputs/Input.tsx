@@ -13,6 +13,7 @@ interface InputProps {
   register: UseFormRegister<FieldValues>;
   errors: FieldErrors;
   disabled?: boolean;
+  placeholder?: string;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -23,13 +24,17 @@ const Input: React.FC<InputProps> = ({
   register,
   errors,
   disabled,
+  placeholder,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = id === "password" || id === "confirmPassword";
 
   return (
     <div>
-      <label className="block text-sm font-medium leading-6 text-gray-900" htmlFor={id}>
+      <label
+        className="block text-sm font-medium leading-6 text-gray-900"
+        htmlFor={id}
+      >
         {label}
       </label>
       <div className="mt-2 relative">
@@ -38,6 +43,7 @@ const Input: React.FC<InputProps> = ({
           type={isPassword && showPassword ? "text" : type}
           autoComplete={id}
           disabled={disabled}
+          placeholder={placeholder}
           {...register(id, { required: `${label} is required` })} // Show error if empty
           className={clsx(
             `
@@ -69,14 +75,19 @@ const Input: React.FC<InputProps> = ({
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
           >
-            {showPassword ? <AiFillEyeInvisible size={20} /> : <AiFillEye size={20} />}
+            {showPassword ? (
+              <AiFillEyeInvisible size={20} />
+            ) : (
+              <AiFillEye size={20} />
+            )}
           </button>
         )}
       </div>
-      {errors[id] && <p className="text-red-500 text-sm">{errors[id]?.message as string}</p>}
+      {errors[id] && (
+        <p className="text-red-500 text-sm">{errors[id]?.message as string}</p>
+      )}
     </div>
   );
 };
-
 
 export default Input;
